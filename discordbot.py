@@ -12,8 +12,9 @@ intents.members = True
 
 bot = commands.Bot(command_prefix=config.c.prefix, description=description, intents=intents)
 
-#DB = myDB.connectDB(DBHost,DBusername,DBpassword)
-
+DB = database.DBClient(config.c.db_host,config.c.db_username,config.c.db_password)
+userinfo = DB.getUsers()
+print(userinfo[0])
 
 @bot.event
 async def on_ready():

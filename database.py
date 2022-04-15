@@ -1,20 +1,17 @@
 import mysql.connector
 import config
 
-print("Starting connection to mySQL server with hostname: {0}".format(config.c.db_host))
-mydb = mysql.connector.connect(
-  host=config.c.db_host,
-  user=config.c.db_username,
-  password=config.c.db_password,
-  database="pydiscordbot"
-)
-print(mydb)
+class DBClient:
+  def __init__(self, db_host, db_username, db_password):
+    self.client = mysql.connector.connect(host=db_host,
+                                          user=db_username,
+                                          password=db_password,
+                                          database="pydiscordbot")
+  def getUsers(self):
+    mycursor = self.client.cursor()
+    mycursor.execute("SELECT * FROM users")
+    myresult = mycursor.fetchall()
+    return myresult
 
-mycursor = mydb.cursor()
 
-mycursor.execute("SELECT * FROM users")
 
-myresult = mycursor.fetchall()
-
-for x in myresult:
-  print(x)
