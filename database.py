@@ -33,19 +33,15 @@ class DBClient:
       sql = "UPDATE `users` SET `Birthday` = '{0}' WHERE DISCORDID = '{1}'".format(birthday,DiscordID)
       self.executeSQL(sql,False)
 
-    def updateBalance(self,DiscordID,value,option):
+    def updateBalance(self,DiscordID,value,option=""):
         if option=="set" :
             balance = value;
             sql = "UPDATE `users` SET `Balance` = {0} WHERE DISCORDID = {1}".format(value,DiscordID)
         else :
             sql = "SELECT Balance FROM users WHERE DISCORDID = {0}".format(DiscordID)
             balance = self.executeSQL(sql)
-            if option=="add" :
-                balance = balance + value
-                sql = "UPDATE `users` SET `Balance` = {0} WHERE DISCORDID = {1}".format(balance,DiscordID)
-            if option == "sub":
-                balance = balance - value
-                sql = "UPDATE `users` SET `Balance` = {0} WHERE DISCORDID = {1}".format(balance, DiscordID)
+            balance = balance + value
+            sql = "UPDATE `users` SET `Balance` = {0} WHERE DISCORDID = {1}".format(balance,DiscordID)
             self.executeSQL(sql,False)
     def getBalance(self,DiscordID):
         sql = "SELECT Balance FROM users WHERE DISCORDID = {0}".format(DiscordID)

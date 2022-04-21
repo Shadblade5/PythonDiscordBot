@@ -53,8 +53,38 @@ async def setBirthday(ctx,month,day,year):
 
 @bot.command()
 async def getBalance(ctx):
-    await ctx.send(DB.getBalance(ctx.author.id))
+    balance = DB.getBalance(ctx.author.id)
+    response = "You have {}$".format(balance)
+    await ctx.send(response)
 
+@bot.command()
+async def gamble(ctx,wager,bet):
+    roll = random.randint(0,36)
+    if bet is int:
+        if bet == roll:
+            newbal = 3*wager
+    else:
+        if bet is str:
+            if bet == "even" and bet%2==0:
+                newbal = 2*wager
+            if bet == "odd" and bet%2>0:
+                newbal = 2*wager
+        else:
+            newbal = -wager;
+
+    if newbal>0:
+        response = "You won {}$".format(newbal)
+    else:
+        response = "You lost {}$".format(newbal)
+    DB.updateBalance(ctx.author.id,newbal,"add")
+    await ctx.send(response)
+
+@bot.command()
+async def work(ctx):
+    paycheck = random.randin(0,100)
+    DB.updateBalance(ctx.author.id,paycheck,"add")
+    response = "You earned {}$".format(paycheck)
+    await ctx.send(response)
 
 
 bot.run(config.c.token)
