@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import config
 import database
+import random
 
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
@@ -30,16 +31,16 @@ async def on_member_join(ctx):
 @bot.command()
 async def getusers(ctx):
     await ctx.send(DB.getUsers())
-
+"""
 @bot.command()
 async def add(ctx, left: int, right: int):
-    """Adds two numbers together."""
     await ctx.send(left + right)
-
+"""
 @bot.command()
 async def getUserInfo(ctx):
     userinfo = DB.getUserInfo(ctx.author.id)
-    await ctx.send(userinfo)
+    response = " DiscordID: {0}\nName: {1}\nBalance: {2}\nJoinDate: {3}\nBirthday: {4}".format(userinfo[0],userinfo[1],userinfo[2],userinfo[3],userinfo[4])
+    await ctx.send(response)
 
 @bot.command()
 async def addUser(ctx):
@@ -58,30 +59,35 @@ async def getBalance(ctx):
     await ctx.send(response)
 
 @bot.command()
-async def gamble(ctx,wager,bet):
+async def gamble(ctx,wager:int,bet:str):
+    print(type(wager))
+    print(type(bet))
+    random.seed()
     roll = random.randint(0,36)
-    if bet is int:
-        if bet == roll:
-            newbal = 3*wager
+    even = "even"
+    odd = "odd"
+    if (bet == even and bet % 2 == 0):
+        newbal = 2*wager
     else:
-        if bet is str:
-            if bet == "even" and bet%2==0:
-                newbal = 2*wager
-            if bet == "odd" and bet%2>0:
-                newbal = 2*wager
+        if (bet == odd and bet % 2 > 0):
+            newbal = 2 * wager
         else:
-            newbal = -wager;
+            if int(bet) == roll:
+                newbal = 3 * wager
+            else:
+                newbal = -wager;
 
     if newbal>0:
         response = "You won {}$".format(newbal)
     else:
         response = "You lost {}$".format(newbal)
-    DB.updateBalance(ctx.author.id,newbal,"add")
+    #DB.updateBalance(ctx.author.id,newbal,"add")
     await ctx.send(response)
 
 @bot.command()
 async def work(ctx):
-    paycheck = random.randin(0,100)
+    random.seed()
+    paycheck = random.randint(0,100)
     DB.updateBalance(ctx.author.id,paycheck,"add")
     response = "You earned {}$".format(paycheck)
     await ctx.send(response)
